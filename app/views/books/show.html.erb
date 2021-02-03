@@ -1,24 +1,117 @@
-<p id="notice"><%= notice %></p>
+<div>
+  <div>
+    <h1>
+      Book #<%= @the_book.id %> details
+    </h1>
 
-<p>
-  <strong>Title:</strong>
-  <%= @book.title %>
-</p>
+    <div>
+      <div>
+        <a href="/books">
+          Go back
+        </a>
+      </div>
 
-<p>
-  <strong>Description:</strong>
-  <%= @book.description %>
-</p>
+      <div>
+        <a href="/delete_book/<%= @the_book.id %>">
+          Delete book
+        </a>
+      </div>
+    </div>
 
-<p>
-  <strong>Released at:</strong>
-  <%= @book.released_at %>
-</p>
+    <dl>
+      <dt>
+        Title
+      </dt>
+      <dd>
+        <%= @the_book.title %>
+      </dd>
 
-<p>
-  <strong>Popular:</strong>
-  <%= @book.popular %>
-</p>
+      <dt>
+        Description
+      </dt>
+      <dd>
+        <%= @the_book.description %>
+      </dd>
 
-<%= link_to 'Edit', edit_book_path(@book) %> |
-<%= link_to 'Back', books_path %>
+      <dt>
+        Released at
+      </dt>
+      <dd>
+        <%= @the_book.released_at %>
+      </dd>
+
+      <dt>
+        Popular
+      </dt>
+      <dd>
+        <%= @the_book.popular %>
+      </dd>
+
+      <dt>
+        Created at
+      </dt>
+      <dd>
+        <%= time_ago_in_words(@the_book.created_at) %> ago
+      </dd>
+
+      <dt>
+        Updated at
+      </dt>
+      <dd>
+        <%= time_ago_in_words(@the_book.updated_at) %> ago
+      </dd>
+    </dl>
+  </div>
+</div>
+
+<hr>
+
+
+<div>
+  <div>
+    <h2>
+      Edit book
+    </h2>
+
+    <form action="/modify_book/<%= @the_book.id %>"  method="post" >
+      <div>
+        <label for="title_box">
+          Title
+        </label>
+
+        <input type="text" id="title_box" name="query_title" value="<%= @the_book.title %>">
+      </div>
+
+      <div>
+        <label for="description_box">
+          Description
+        </label>
+
+        <textarea id="description_box" name="query_description"><%= @the_book.description %></textarea>
+      </div>
+
+      <div>
+        <label for="released_at_box">
+          Released at
+        </label>
+
+        <input type="datetime-local" id="released_at_box" name="query_released_at"
+         value="<%= @the_book.released_at %>">
+      </div>
+
+      <div>
+        <input type="checkbox" id="popular_box" name="query_popular" value="1" <%= "checked" if @the_book.popular %>>
+
+        <label for="popular_box">
+            Popular
+        </label>
+      </div>
+
+      <button>
+        Update book
+      </button>
+    </form>
+  </div>
+</div>
+
+<hr>

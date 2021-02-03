@@ -1,74 +1,60 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy]
-
-  # GET /books
-  # GET /books.json
   def index
-    @books = Book.all
+    matching_books = Book.all
+
+    @list_of_books = matching_books.order({ :created_at => :desc })
+
+    render({ :template => "books/index.html.erb" })
   end
 
-  # GET /books/1
-  # GET /books/1.json
   def show
+    the_id = params.fetch("path_id")
+
+    matching_books = Book.where({ :id => the_id })
+
+    @the_book = matching_books.at(0)
+
+    render({ :template => "books/show.html.erb" })
   end
 
-  # GET /books/new
-  def new
-    @book = Book.new
-  end
-
-  # GET /books/1/edit
-  def edit
-  end
-
-  # POST /books
-  # POST /books.json
   def create
-    @book = Book.new(book_params)
+    the_book = Book.new
+    the_book.title = params.fetch("query_title")
+    the_book.description = params.fetch("query_description")
+    the_book.released_at = params.fetch("query_released_at")
+    the_book.popular = params.fetch("query_popular", false)
 
-    respond_to do |format|
-      if @book.save
-        format.html { redirect_to @book, notice: 'Book was successfully created.' }
-        format.json { render :show, status: :created, location: @book }
-      else
-        format.html { render :new }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
+    if the_book.valid?
+      the_book.save
+      redirect_to("/books", { :notice => "Book created successfully." })
+    else
+      redirect_to("/books", { :notice => "Book failed to create successfully." })
     end
   end
 
-  # PATCH/PUT /books/1
-  # PATCH/PUT /books/1.json
   def update
-    respond_to do |format|
-      if @book.update(book_params)
-        format.html { redirect_to @book, notice: 'Book was successfully updated.' }
-        format.json { render :show, status: :ok, location: @book }
-      else
-        format.html { render :edit }
-        format.json { render json: @book.errors, status: :unprocessable_entity }
-      end
+    the_id = params.fetch("path_id")
+    the_book = Book.where({ :id => the_id }).at(0)
+
+    the_book.title = params.fetch("query_title")
+    the_book.description = params.fetch("query_description")
+    the_book.released_at = params.fetch("query_released_at")
+    the_book.popular = params.fetch("query_popular", false)
+
+    if the_book.valid?
+      the_book.save
+      redirect_to("/books/#{the_book.id}", { :notice => "Book updated successfully."} )
+    else
+      redirect_to("/books/#{the_book.id}", { :alert => "Book failed to update successfully." })
     end
   end
 
-  # DELETE /books/1
-  # DELETE /books/1.json
   def destroy
-    @book.destroy
-    respond_to do |format|
-      format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    the_id = params.fetch("path_id")
+    the_book = Book.where({ :id => the_id }).at(0)
+
+    the_book.destroy
+
+    redirect_to("/books", { :notice => "Book deleted successfully."} )
   end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_book
-      @book = Book.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def book_params
-      params.require(:book).permit(:title, :description, :released_at, :popular)
-    end
 end
