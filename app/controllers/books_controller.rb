@@ -1,20 +1,20 @@
 class BooksController < ApplicationController
-  def index
+  def list
     matching_books = Book.all
 
     @list_of_books = matching_books.order({ :created_at => :desc })
 
-    render({ :template => "books/index.html.erb" })
+    render({ :template => "book_templates/list.html.erb" })
   end
 
-  def show
+  def details
     the_id = params.fetch("path_id")
 
     matching_books = Book.where({ :id => the_id })
 
     @the_book = matching_books.at(0)
 
-    render({ :template => "books/show.html.erb" })
+    render({ :template => "book_templates/details.html.erb" })
   end
 
   def create
